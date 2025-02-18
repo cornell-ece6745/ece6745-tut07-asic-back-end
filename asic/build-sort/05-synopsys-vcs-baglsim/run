@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#=========================================================================
+# 05-synopsys-vcs-baglsim
+#=========================================================================
+
+# Stop on error and echo all commands
+
+set -e
+trap 'echo "CMD: $BASH_COMMAND"' DEBUG
+
+# Determine RUNDIR and TOPDIR
+
+RUNDIR="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))"
+TOPDIR="$(readlink -f $RUNDIR/../../..)"
+
+cd $RUNDIR
+
+# Run baglsim
+
+rm -rf simv* run.log
+
+vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
+  +neg_tchk +sdfverbose \
+  -sdf max:Top.DUT:../04-cadence-innovus-pnr/post-pnr.sdf \
+  +define+CYCLE_TIME=0.700 \
+  +define+VTB_INPUT_DELAY=0.025 \
+  +define+VTB_OUTPUT_DELAY=0.025 \
+  +vcs+dumpvars+waves.vcd \
+  +incdir+${TOPDIR}/sim/build \
+  ${ECE6745_STDCELLS}/stdcells.v \
+  ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
+  ../04-cadence-innovus-pnr/post-pnr.v | tee run.log
+
+./simv | tee -a run.log
+
+vcd2saif -input ./waves.vcd -output ./waves.saif
+

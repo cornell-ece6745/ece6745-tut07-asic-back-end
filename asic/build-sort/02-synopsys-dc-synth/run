@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#=========================================================================
+# 02-synopsys-dc-synth
+#=========================================================================
+
+# Stop on error and echo all commands
+
+set -e
+trap 'echo "CMD: $BASH_COMMAND"' DEBUG
+
+# Determine RUNDIR and TOPDIR
+
+RUNDIR="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))"
+TOPDIR="$(readlink -f $RUNDIR/../../..)"
+export TOPDIR
+
+cd $RUNDIR
+
+# Run using run.tcl script
+
+dc_shell-xg-t -f run.tcl | tee run.log
+

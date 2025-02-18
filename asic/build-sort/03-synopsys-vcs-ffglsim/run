@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#=========================================================================
+# 03-synopsys-vcs-ffglsim
+#=========================================================================
+
+# Stop on error and echo all commands
+
+set -e
+trap 'echo "CMD: $BASH_COMMAND"' DEBUG
+
+# Determine RUNDIR and TOPDIR
+
+RUNDIR="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))"
+TOPDIR="$(readlink -f $RUNDIR/../../..)"
+
+cd $RUNDIR
+
+# Run ffglsim
+
+rm -rf simv* run.log
+
+vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
+  +delay_mode_zero \
+  +vcs+dumpvars+waves.vcd \
+  +incdir+${TOPDIR}/sim/build \
+  ${ECE6745_STDCELLS}/stdcells.v \
+  ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
+  ../02-synopsys-dc-synth/post-synth.v | tee run.log
+
+./simv | tee -a run.log
+

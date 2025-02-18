@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#=========================================================================
+# 01-synopsys-vcs-rtlsim
+#=========================================================================
+
+# Stop on error and echo all commands
+
+set -e
+trap 'echo "CMD: $BASH_COMMAND"' DEBUG
+
+# Determine RUNDIR and TOPDIR
+
+RUNDIR="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))"
+TOPDIR="$(readlink -f $RUNDIR/../../..)"
+
+cd $RUNDIR
+
+# Run rtlsim
+
+rm -rf simv* run.log
+
+vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
+  +vcs+dumpvars+waves.vcd \
+  +incdir+$TOPDIR/sim/build \
+  $TOPDIR/sim/build/SortUnitStruct_random_tb.v \
+  $TOPDIR/sim/build/SortUnitStruct__pickled.v | tee run.log
+
+./simv | tee -a run.log
+
