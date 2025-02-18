@@ -36,6 +36,7 @@ from random import randint
 from math   import gcd
 
 from pymtl3 import *
+from pymtl3.passes.backends.verilog import *
 from pymtl3.stdlib.test_utils import config_model_with_cmdline_opts
 
 from tut3_verilog.gcd.GcdUnitFL import GcdUnitFL
@@ -141,17 +142,18 @@ def main():
 
   cmdline_opts = {
     'dump_vcd': f"{unique_name}" if opts.dump_vcd else '',
-    'dump_vtb': f"{unique_name}" if opts.dump_vtb else '',
+    'dump_vtb': f"{opts.input}" if opts.dump_vtb else '',
     'test_verilog': 'zeros' if opts.translate else '',
   }
 
   # Configure the test harness component
 
+  th.elaborate()
+  th.gcd.set_metadata( VerilogTranslationPass.explicit_module_name, "GcdUnit" )
   config_model_with_cmdline_opts( th, cmdline_opts, duts=['gcd'] )
 
   # Apply necessary passes
 
-  # Create a simulator
   th.apply( DefaultPassGroup( linetrace=opts.trace ) )
 
   # Reset test harness
