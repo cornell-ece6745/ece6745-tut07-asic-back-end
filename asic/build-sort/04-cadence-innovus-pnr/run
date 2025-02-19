@@ -12,7 +12,6 @@ trap 'echo "CMD: $BASH_COMMAND"' DEBUG
 
 RUNDIR="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))"
 TOPDIR="$(readlink -f $RUNDIR/../../..)"
-export TOPDIR
 
 cd $RUNDIR
 

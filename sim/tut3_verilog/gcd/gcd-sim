@@ -12,6 +12,7 @@
 #  --translate         Translate RTL model to Verilog
 #  --dump-vcd          Dump VCD to gcd-<impl>-<input>.vcd
 #  --dump-vtb          Dump Verilog test bench
+#  --short-mname       Use shorter module name for ASIC flow tutorials
 #
 # Author : Christopher Batten, Shunning Jiang
 # Date   : Feb 13, 2021
@@ -75,11 +76,12 @@ def parse_cmdline():
   p.add_argument( "--input", default="random",
     choices=["random","small","zeros"] )
 
-  p.add_argument( "--trace",     action="store_true" )
-  p.add_argument( "--stats",     action="store_true" )
-  p.add_argument( "--translate", action="store_true" )
-  p.add_argument( "--dump-vcd",  action="store_true" )
-  p.add_argument( "--dump-vtb",  action="store_true" )
+  p.add_argument( "--trace",       action="store_true" )
+  p.add_argument( "--stats",       action="store_true" )
+  p.add_argument( "--translate",   action="store_true" )
+  p.add_argument( "--dump-vcd",    action="store_true" )
+  p.add_argument( "--dump-vtb",    action="store_true" )
+  p.add_argument( "--short-mname", action="store_true" )
 
   opts = p.parse_args()
   if opts.help: p.error()
@@ -138,18 +140,26 @@ def main():
 
   # Create VCD filename
 
-  unique_name = f"gcd-{opts.impl}-{opts.input}"
+  vcd_name = f"sort-sim-{opts.impl}-{opts.input}"
+
+  if opts.short_mname:
+    vtb_name = f"{opts.input}"
+  else:
+    vtb_name = vcd_name
 
   cmdline_opts = {
-    'dump_vcd': f"{unique_name}" if opts.dump_vcd else '',
-    'dump_vtb': f"{opts.input}" if opts.dump_vtb else '',
+    'dump_vcd': f"{vcd_name}" if opts.dump_vcd else '',
+    'dump_vtb': f"{vtb_name}" if opts.dump_vtb else '',
     'test_verilog': 'zeros' if opts.translate else '',
   }
 
   # Configure the test harness component
 
   th.elaborate()
-  th.gcd.set_metadata( VerilogTranslationPass.explicit_module_name, "GcdUnit" )
+
+  if opts.short_mname:
+    th.gcd.set_metadata( VerilogTranslationPass.explicit_module_name, "GcdUnit" )
+
   config_model_with_cmdline_opts( th, cmdline_opts, duts=['gcd'] )
 
   # Apply necessary passes

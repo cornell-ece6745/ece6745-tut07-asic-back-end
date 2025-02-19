@@ -22,6 +22,7 @@ __pycache__/
 *~
 *.*.swp
 
+asic/build-*
 asic-manual
 asic/old
 

@@ -33,5 +33,5 @@ vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
 
 ./simv | tee -a run.log
 
-vcd2saif -input ./waves.vcd -output ./waves.saif
+vcd2saif -input ./waves.vcd -output ./waves.saif | tee -a run.log
 

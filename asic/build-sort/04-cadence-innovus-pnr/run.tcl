@@ -68,7 +68,8 @@ create_ccopt_clock_tree_spec
 set_ccopt_property update_io_latency false
 ccopt_design -cts
 
-optDesign -postCTS -setup -hold
+optDesign -postCTS -setup
+optDesign -postCTS -hold
 
 #-------------------------------------------------------------------------
 # Routing
@@ -76,7 +77,9 @@ optDesign -postCTS -setup -hold
 
 routeDesign
 
-optDesign -postRoute -setup -hold -drv
+optDesign -postRoute -setup
+optDesign -postRoute -hold
+optDesign -postRoute -drv
 
 #-------------------------------------------------------------------------
 # Finishing
@@ -97,13 +100,11 @@ saveNetlist post-pnr.v
  
 extractRC
 rcOut -rc_corner typical -spef post-pnr.spef
-
-write_sdc post-pnr.sdc
 write_sdf post-pnr.sdf
  
 streamOut post-pnr.gds \
-            -merge "$env(ECE6745_STDCELLS)/stdcells.gds" \
-            -mapFile "$env(ECE6745_STDCELLS)/rtk-stream-out.map"
+  -merge "$env(ECE6745_STDCELLS)/stdcells.gds" \
+  -mapFile "$env(ECE6745_STDCELLS)/rtk-stream-out.map"
  
 report_timing -late  -path_type full_clock -net > timing-setup.rpt
 report_timing -early -path_type full_clock -net > timing-hold.rpt

@@ -18,7 +18,7 @@
 
 module tut3_verilog_sort_SortUnitFlat
 #(
-  parameter p_nbits = 1
+  parameter p_nbits = 8
 )(
   input  logic               clk,
   input  logic               reset,

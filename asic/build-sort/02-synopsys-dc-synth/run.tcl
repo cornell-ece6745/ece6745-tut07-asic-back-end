@@ -59,8 +59,8 @@ compile
 # Outputs
 #-------------------------------------------------------------------------
 
-write -format verilog -hierarchy -output post-synth.v
 write -format ddc     -hierarchy -output post-synth.ddc
+write -format verilog -hierarchy -output post-synth.v
 write_sdc post-synth.sdc
 
 report_timing -nets      > timing.rpt

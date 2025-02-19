@@ -12,6 +12,7 @@
 #  --translate         Translate RTL model to Verilog
 #  --dump-vcd          Dump VCD to sort-<impl>-<input>.vcd
 #  --dump-vtb          Dump Verilog test bench
+#  --short-mname       Use shorter module name for ASIC flow tutorials
 #
 # Author : Christopher Batten, Shunning Jiang
 # Date   : Jan 23, 2020
@@ -68,11 +69,12 @@ def parse_cmdline():
   p.add_argument( "--input", default="random",
     choices=["random","sorted-fwd","sorted-rev","zeros"] )
 
-  p.add_argument( "--trace",     action="store_true" )
-  p.add_argument( "--stats",     action="store_true" )
-  p.add_argument( "--translate", action="store_true" )
-  p.add_argument( "--dump-vcd",  action="store_true" )
-  p.add_argument( "--dump-vtb",  action="store_true" )
+  p.add_argument( "--trace",       action="store_true" )
+  p.add_argument( "--stats",       action="store_true" )
+  p.add_argument( "--translate",   action="store_true" )
+  p.add_argument( "--dump-vcd",    action="store_true" )
+  p.add_argument( "--dump-vtb",    action="store_true" )
+  p.add_argument( "--short-mname", action="store_true" )
 
   opts = p.parse_args()
   if opts.help: p.error()
@@ -128,15 +130,21 @@ def main():
 
   # Set metadata
 
-  unique_name = f"sort-{opts.impl}-{opts.input}"
+  vcd_name = f"sort-sim-{opts.impl}-{opts.input}"
+
+  if opts.short_mname:
+    vtb_name = f"{opts.input}"
+  else:
+    vtb_name = vcd_name
 
   cmdline_opts = {
-    'dump_vcd': f"{unique_name}" if opts.dump_vcd else '',
-    'dump_vtb': f"{opts.input}" if opts.dump_vtb else '',
+    'dump_vcd': f"{vcd_name}" if opts.dump_vcd else '',
+    'dump_vtb': f"{vtb_name}" if opts.dump_vtb else '',
     'test_verilog': 'zeros' if opts.translate else '',
   }
 
-  model.set_metadata( VerilogTranslationPass.explicit_module_name, "SortUnitStruct" )
+  if opts.short_mname:
+    model.set_metadata( VerilogTranslationPass.explicit_module_name, "SortUnitStruct" )
 
   # Configure the model
 
@@ -144,8 +152,9 @@ def main():
 
   # Apply necessary passes
 
-  # Create a simulator
   model.apply( DefaultPassGroup( linetrace=opts.trace ) )
+
+  # Reset model
 
   model.sim_reset()
 
