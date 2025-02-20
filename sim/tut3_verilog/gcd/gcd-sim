@@ -140,7 +140,7 @@ def main():
 
   # Create VCD filename
 
-  vcd_name = f"sort-sim-{opts.impl}-{opts.input}"
+  vcd_name = f"gcd-sim-{opts.impl}-{opts.input}"
 
   if opts.short_mname:
     vtb_name = f"{opts.input}"
