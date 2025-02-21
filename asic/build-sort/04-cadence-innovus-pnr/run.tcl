@@ -81,6 +81,8 @@ optDesign -postRoute -setup
 optDesign -postRoute -hold
 optDesign -postRoute -drv
 
+extractRC
+
 #-------------------------------------------------------------------------
 # Finishing
 #-------------------------------------------------------------------------
@@ -98,7 +100,6 @@ verify_drc
 saveDesign  post-pnr.enc
 saveNetlist post-pnr.v
  
-extractRC
 rcOut -rc_corner typical -spef post-pnr.spef
 write_sdf post-pnr.sdf
  
