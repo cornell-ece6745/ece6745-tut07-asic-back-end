@@ -8,10 +8,10 @@
 set -e
 trap 'echo "CMD: $BASH_COMMAND"' DEBUG
 
-# Determine RUNDIR and TOPDIR
+# Determine RUNDIR and SRCDIR
 
 RUNDIR="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))"
-TOPDIR="$(readlink -f $RUNDIR/../../..)"
+SRCDIR="$(readlink -f $RUNDIR/../../../sim/build)"
 
 cd $RUNDIR
 
@@ -25,13 +25,12 @@ vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
   +define+CYCLE_TIME=0.700 \
   +define+VTB_INPUT_DELAY=0.025 \
   +define+VTB_OUTPUT_DELAY=0.025 \
+  +define+VTB_DUMP_SAIF=waves.saif \
   +vcs+dumpvars+waves.vcd \
-  +incdir+${TOPDIR}/sim/build \
+  +incdir+${SRCDIR} \
   ${ECE6745_STDCELLS}/stdcells.v \
-  ${TOPDIR}/sim/build/SortUnitStruct_random_tb.v \
+  ${SRCDIR}/SortUnitStruct_random_tb.v \
   ../04-cadence-innovus-pnr/post-pnr.v | tee run.log
 
 ./simv | tee -a run.log
-
-vcd2saif -input ./waves.vcd -output ./waves.saif | tee -a run.log
 

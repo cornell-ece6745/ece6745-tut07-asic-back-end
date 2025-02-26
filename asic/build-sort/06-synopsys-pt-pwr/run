@@ -8,10 +8,9 @@
 set -e
 trap 'echo "CMD: $BASH_COMMAND"' DEBUG
 
-# Determine RUNDIR and TOPDIR
+# Determine RUNDIR
 
 RUNDIR="$(dirname $(readlink -f "${BASH_SOURCE[0]}"))"
-TOPDIR="$(readlink -f $RUNDIR/../../..)"
 
 cd $RUNDIR
 

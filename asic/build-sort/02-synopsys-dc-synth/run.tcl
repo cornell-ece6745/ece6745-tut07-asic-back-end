@@ -24,7 +24,7 @@ set_dont_use {
 # Inputs
 #-------------------------------------------------------------------------
 
-analyze -format sverilog $env(TOPDIR)/sim/build/SortUnitStruct__pickled.v
+analyze -format sverilog $env(SRCDIR)/SortUnitStruct__pickled.v
 elaborate SortUnitStruct
 
 #-------------------------------------------------------------------------

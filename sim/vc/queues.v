@@ -55,7 +55,10 @@ module vc_QueueCtrl1
   logic full_next;
 
   always_ff @(posedge clk) begin
-    full <= reset ? 1'b0 : full_next;
+    if ( reset )
+      full <= 1'b0;
+    else
+      full <= full_next;
   end
 
   assign num_free_entries = full ? 1'b0 : 1'b1;
