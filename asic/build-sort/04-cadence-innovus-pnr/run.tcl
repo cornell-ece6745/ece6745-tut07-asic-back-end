@@ -31,11 +31,22 @@ setOptMode -holdFixingCells {
 floorPlan -r 1.0 0.70 4.0 4.0 4.0 4.0
 
 #-------------------------------------------------------------------------
+# Placement
+#-------------------------------------------------------------------------
+
+place_design
+addTieHiLo -cell "LOGIC1_X1 LOGIC0_X1"
+assignIoPins -pin *
+
+#-------------------------------------------------------------------------
 # Power Routing
 #-------------------------------------------------------------------------
 
-globalNetConnect VDD -type pgpin -pin VDD -inst * -verbose
-globalNetConnect VSS -type pgpin -pin VSS -inst * -verbose
+globalNetConnect VDD -type pgpin -pin VDD -all -verbose
+globalNetConnect VSS -type pgpin -pin VSS -all -verbose
+
+globalNetConnect VDD -type tiehi -pin VDD -all -verbose
+globalNetConnect VSS -type tielo -pin VSS -all -verbose
 
 sroute -nets {VDD VSS}
 
@@ -52,13 +63,6 @@ addStripe \
   -nets {VSS VDD} -layer 8 -direction vertical \
   -width 0.8 -spacing 4.8 \
   -set_to_set_distance 11.2 -start_offset 2.4
-
-#-------------------------------------------------------------------------
-# Placement
-#-------------------------------------------------------------------------
-
-place_design
-assignIoPins -pin *
 
 #-------------------------------------------------------------------------
 # Clock-Tree Synthesis

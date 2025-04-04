@@ -24,8 +24,8 @@ vcs -sverilog -xprop=tmerge -override_timescale=1ns/1ps -top Top \
   +vcs+dumpvars+waves.vcd \
   +incdir+${SRCDIR} \
   ${ECE6745_STDCELLS}/stdcells.v \
-  ${SRCDIR}/SortUnitStruct_random_tb.v \
-  ../02-synopsys-dc-synth/post-synth.v | tee run.log
+  ../02-synopsys-dc-synth/post-synth.v \
+  ${SRCDIR}/SortUnitStruct_random_tb.v | tee run.log
 
 ./simv | tee -a run.log
 
