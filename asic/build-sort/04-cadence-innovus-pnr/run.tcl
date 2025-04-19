@@ -20,6 +20,7 @@ setDesignMode -process 45
 setDelayCalMode -SIAware false
 setOptMode -usefulSkew false
 
+setOptMode -holdTargetSlack 0.010
 setOptMode -holdFixingCells {
   BUF_X1 BUF_X1 BUF_X2 BUF_X4 BUF_X8 BUF_X16 BUF_X32
 }
@@ -34,7 +35,7 @@ floorPlan -r 1.0 0.70 4.0 4.0 4.0 4.0
 # Placement
 #-------------------------------------------------------------------------
 
-place_design
+place_opt_design
 addTieHiLo -cell "LOGIC1_X1 LOGIC0_X1"
 assignIoPins -pin *
 
@@ -70,7 +71,7 @@ addStripe \
 
 create_ccopt_clock_tree_spec
 set_ccopt_property update_io_latency false
-ccopt_design -cts
+clock_opt_design
 
 optDesign -postCTS -setup
 optDesign -postCTS -hold
